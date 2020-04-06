@@ -10,7 +10,7 @@ const App = () => {
 
   useEffect(() => {
     // getUserData();
-    Hub.listen("auth", this, onHubCapsule);
+    Hub.listen("auth", this, "onHubCapsule");
   }, []);
 
   const getUserData = async () => {
@@ -24,6 +24,8 @@ const App = () => {
   };
 
   const onHubCapsule = (capsule) => {
+    console.log("capsule: ", capsule);
+    debugger;
     switch (capsule.payload.event) {
       case "signIn":
         console.log("signed in");
@@ -40,7 +42,7 @@ const App = () => {
   };
 
   return !user ? (
-    <Authenticator />
+    <Authenticator theme={theme} />
   ) : (
     <div>{user ? `Hello ${user.username}` : "no one found"}</div>
   );
@@ -48,22 +50,10 @@ const App = () => {
 
 export default App;
 
-// const theme = {
-//   ...AmplifyTheme,
-//   navBar: {
-//     ...AmplifyTheme,
-//     backgroundColor: "#ccc",
-//   },
-//   button: {
-//     ...AmplifyTheme.button,
-//     backgroundColor: "var(--amazonOrange)",
-//     color: "white",
-//   },
-//   sectionHeader: {
-//     ...AmplifyTheme,
-//     backgroundColor: "#eee",
-//     padding: "10px",
-//   },
-// };
-
-// export default withAuthenticator(App, true, [], null, theme);
+const theme = {
+  button: {
+    ...AmplifyTheme.button,
+    backgroundColor: "var(--amazonOrange)",
+    color: "white",
+  },
+};
