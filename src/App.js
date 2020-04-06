@@ -1,39 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 
 import "./App.css";
 import { Auth, Hub } from "aws-amplify";
 
 import { Authenticator, AmplifyTheme } from "aws-amplify-react";
 
-const App = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // getUserData();
-    Hub.listen("auth", this, "onHubCapsule");
-  }, []);
-
-  const getUserData = async () => {
-    const user = await Auth.currentAuthenticatedUser();
-
-    if (user) {
-      setUser(user);
-    } else {
-      setUser(null);
-    }
+class App extends Component {
+  state = {
+    user: null,
   };
 
-  const onHubCapsule = (capsule) => {
-    console.log("capsule: ", capsule);
+  componentDidMount() {
+    this.getUserData();
+
+    console.dir(AmplifyTheme);
+
+    Hub.listen("auth", this, "onHubCapsule");
+  }
+
+  getUserData = async () => {
+    const user = await Auth.currentAuthenticatedUser();
+
+    user
+      ? this.setState({
+          user,
+        })
+      : this.setState({
+          user: null,
+        });
+  };
+
+  onHubCapsule = (capsule) => {
+    console.log("called");
     debugger;
     switch (capsule.payload.event) {
       case "signIn":
-        console.log("signed in");
-        getUserData();
+        this.getUserData();
+        break;
+      case "signUp":
+        console.log("signUp");
         break;
       case "signOut":
-        console.log("signed out");
-        setUser(null);
+        console.log("signOut");
+
+        this.setState({
+          user: null,
+        });
         break;
 
       default:
@@ -41,19 +53,10 @@ const App = () => {
     }
   };
 
-  return !user ? (
-    <Authenticator theme={theme} />
-  ) : (
-    <div>{user ? `Hello ${user.username}` : "no one found"}</div>
-  );
-};
+  render() {
+    const { user } = this.state;
+    return !user ? <Authenticator /> : <div>App</div>;
+  }
+}
 
 export default App;
-
-const theme = {
-  button: {
-    ...AmplifyTheme.button,
-    backgroundColor: "var(--amazonOrange)",
-    color: "white",
-  },
-};
