@@ -1,17 +1,18 @@
 import React, { Component } from "react";
+
+/* == node modules */
+import { Auth, Hub } from "aws-amplify";
+import { Authenticator } from "aws-amplify-react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import "./App.css";
-import { Auth, Hub } from "aws-amplify";
-
-import { Authenticator, AmplifyTheme } from "aws-amplify-react";
-
 /* == components */
-import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
 import MarketPage from "./pages/MarketPage";
-import { Nav, NavBar } from "aws-amplify-react/dist/AmplifyUI";
+import Navbar from "./components/Navbar";
+import ProfilePage from "./pages/ProfilePage";
+
+/* == styles*/
+import "./App.css";
 
 class App extends Component {
   state = {

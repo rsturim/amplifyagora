@@ -1,7 +1,8 @@
 import React from "react";
-import { Menu as Nav, Icon, Button } from "element-react";
 
+/* == node modules */
 import { NavLink } from "react-router-dom";
+import { Menu as Nav, Icon, Button } from "element-react";
 
 const Navbar = ({ user, handleSignout }) => (
   <Nav mode="horizontal" theme="dark" defaultActive="1">
