@@ -14,6 +14,8 @@ import ProfilePage from "./pages/ProfilePage";
 /* == styles*/
 import "./App.css";
 
+export const UserContext = React.createContext();
+
 class App extends Component {
   state = {
     user: null,
@@ -21,7 +23,6 @@ class App extends Component {
 
   componentDidMount() {
     this.getUserData();
-    // console.dir(AmplifyTheme);
 
     Hub.listen("auth", this, "onHubCapsule");
   }
@@ -72,21 +73,23 @@ class App extends Component {
     return !user ? (
       <Authenticator />
     ) : (
-      <Router>
-        <>
-          <Navbar user={user} handleSignout={this.handleSignout} />
-          <div className="app-container">
-            <Route exact path="/" component={HomePage} />
-            <Route path="/profile" component={ProfilePage} />
-            <Route
-              path="/markets/:marketId"
-              component={({ match }) => (
-                <MarketPage marketId={match.params.marketId} />
-              )}
-            />
-          </div>
-        </>
-      </Router>
+      <UserContext.Provider value={{ user }}>
+        <Router>
+          <>
+            <Navbar user={user} handleSignout={this.handleSignout} />
+            <div className="app-container">
+              <Route exact path="/" component={HomePage} />
+              <Route path="/profile" component={ProfilePage} />
+              <Route
+                path="/markets/:marketId"
+                component={({ match }) => (
+                  <MarketPage marketId={match.params.marketId} />
+                )}
+              />
+            </div>
+          </>
+        </Router>
+      </UserContext.Provider>
     );
   }
 }
