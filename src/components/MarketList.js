@@ -60,8 +60,6 @@ const MarketList = () => {
         //   searchResults.length > 0 ? searchResults : data.listMarkets.items;
 
         const markets = data.listMarkets.items;
-        console.log("markets: ", markets);
-        console.log("------------------------------------------");
         return (
           <>
             <h2 className="header">
