@@ -11,16 +11,16 @@ class NewMarket extends React.Component {
     tags: ["Arts", "Web Dev", "Technology", "Crafts", "Entertainment"],
     selectedTags: [],
     options: [],
-    addMarketDialog: false,
+    addMarketDialog: false
   };
 
-  handleAddMarket = async (user) => {
+  handleAddMarket = async user => {
     try {
       this.setState({ addMarketDialog: false });
       const input = {
         name: this.state.name,
         tags: this.state.selectedTags,
-        owner: user.username,
+        owner: user.username
       };
       const result = await API.graphql(
         graphqlOperation(createMarket, { input })
@@ -32,15 +32,15 @@ class NewMarket extends React.Component {
       console.error("Error adding new market", err);
       Notification.error({
         title: "Error",
-        message: `${err.message || "Error adding market"}`,
+        message: `${err.message || "Error adding market"}`
       });
     }
   };
 
-  handleFilterTags = (query) => {
+  handleFilterTags = query => {
     const options = this.state.tags
-      .map((tag) => ({ value: tag, label: tag }))
-      .filter((tag) => tag.label.toLowerCase().includes(query.toLowerCase()));
+      .map(tag => ({ value: tag, label: tag }))
+      .filter(tag => tag.label.toLowerCase().includes(query.toLowerCase()));
     this.setState({ options });
   };
 
@@ -96,7 +96,7 @@ class NewMarket extends React.Component {
                     <Input
                       placeholder="Market Name"
                       trim={true}
-                      onChange={(name) => this.setState({ name })}
+                      onChange={name => this.setState({ name })}
                       value={this.state.name}
                     />
                   </Form.Item>
@@ -105,13 +105,11 @@ class NewMarket extends React.Component {
                       multiple={true}
                       filterable={true}
                       placeholder="Market Tags"
-                      onChange={(selectedTags) =>
-                        this.setState({ selectedTags })
-                      }
+                      onChange={selectedTags => this.setState({ selectedTags })}
                       remoteMethod={this.handleFilterTags}
                       remote={true}
                     >
-                      {this.state.options.map((option) => (
+                      {this.state.options.map(option => (
                         <Select.Option
                           key={option.value}
                           label={option.label}

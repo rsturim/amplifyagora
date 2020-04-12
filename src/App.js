@@ -18,7 +18,7 @@ export const UserContext = React.createContext();
 
 class App extends Component {
   state = {
-    user: null,
+    user: null
   };
 
   componentDidMount() {
@@ -32,14 +32,14 @@ class App extends Component {
 
     user
       ? this.setState({
-          user,
+          user
         })
       : this.setState({
-          user: null,
+          user: null
         });
   };
 
-  onHubCapsule = (capsule) => {
+  onHubCapsule = capsule => {
     switch (capsule.payload.event) {
       case "signIn":
         console.log("signIn");
@@ -51,7 +51,7 @@ class App extends Component {
       case "signOut":
         console.log("signOut");
         this.setState({
-          user: null,
+          user: null
         });
         break;
       default:
@@ -83,7 +83,7 @@ class App extends Component {
               <Route
                 path="/markets/:marketId"
                 component={({ match }) => (
-                  <MarketPage marketId={match.params.marketId} />
+                  <MarketPage user={user} marketId={match.params.marketId} />
                 )}
               />
             </div>
