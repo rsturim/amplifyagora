@@ -2,24 +2,73 @@ import React, { useState } from "react";
 // prettier-ignore
 import { Form, Button, Input, Notification, Radio, Progress } from "element-react";
 
+import awsmobile from "../aws-exports";
+
+// import  as aws_exports from "../aws-exports";
+
+import { Storage, Auth, API, graphqlOperation } from "aws-amplify";
+import { createProduct } from "../graphql/mutations";
 import { PhotoPicker } from "aws-amplify-react";
+import { convertDollarsToCents } from "../utils";
 
-function NewProduct() {
+function NewProduct({ marketId }) {
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [isShipped, setIsShipped] = useState(true);
-  const [imagePreview, setImagePreview] = useState(null);
   const [image, setImage] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [isShipped, setIsShipped] = useState(true);
+  const [price, setPrice] = useState("");
 
-  const handleAddProduct = () => {
-    console.log("console added");
-    console.log(NewProduct);
+  const [isUploading, setIsUploading] = useState(false);
 
-    setPrice("");
-    setIsShipped(true);
-    setImagePreview(null);
-    setImage("");
-    setDescription("");
+  const handleAddProduct = async () => {
+    try {
+      setIsUploading(true);
+
+      const visibility = "public";
+      const { identityId } = await Auth.currentCredentials();
+      const filename = `/${visibility}/${identityId}/${Date.now()}-${
+        image.name
+      }`;
+
+      const uploadedFile = await Storage.put(filename, image.file, {
+        contentType: image.type
+      });
+
+      const file = {
+        key: uploadedFile.key,
+        bucket: awsmobile.aws_user_files_s3_bucket,
+        region: awsmobile.aws_user_files_s3_bucket_region
+      };
+
+      const input = {
+        productMarketId: marketId,
+        description,
+        shipped: isShipped,
+        price: convertDollarsToCents(price),
+        file
+      };
+
+      const result = await API.graphql(
+        graphqlOperation(createProduct, { input })
+      );
+
+      console.log("result: ", result);
+      console.log("------------------------------------------");
+
+      Notification({
+        title: "Success",
+        message: "Product successfuly created.",
+        type: "success"
+      });
+
+      setDescription("");
+      setImage("");
+      setImagePreview(null);
+      setIsShipped(true);
+      setPrice("");
+    } catch (error) {
+      console.error("Error adding product: ", error);
+    }
   };
 
   return (
@@ -94,11 +143,12 @@ function NewProduct() {
 
         <Form.Item>
           <Button
+            disabled={!image || !description || !price || isUploading}
             type="primary"
+            loading={isUploading}
             onClick={handleAddProduct}
-            disabled={!image || !description || !price}
           >
-            Add Product
+            {isUploading ? "Uploading ..." : "Add Product"}
           </Button>
         </Form.Item>
       </Form>

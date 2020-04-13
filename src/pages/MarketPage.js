@@ -82,7 +82,7 @@ function MarketPage({ marketId, user }) {
                 }
                 name="1"
               >
-                <NewProduct />
+                <NewProduct marketId={marketId} />
               </Tabs.Pane>
             )}
 
